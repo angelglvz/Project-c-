@@ -1,39 +1,41 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<iostream>
-#include <string.h>
-#include <vector>
+#include<string.h>
+#include <map>
+using namespace std;
 
-#define Swiss_Franc_rate 1.04;
-#define British_Pounds_rate 0.84;
-#define Japanese_Yen_rate 130.02;
-#define American_Dollar_rate 1.14;
-#define Euros_rate 1.00; 
-#define Polish_zloti_rate 4.53;
-#define Danish_Crown_rate 7.44;
-#define Swedish_Crown_rate 10.28;
-
-void printlist(vector <string> myVector){
-    for(vector<string>::iterator i = v.begin(); i != v.end(); i++){
-        cout << *i << "\n";
+class Currency{
+  private:
+    double m_value;
+    string m_name;
+  public: 
+    Currency(double value = 1.00, string name = ""):m_value(value), m_name(name){}
+    ~Currency(){
     }
-    cout << "\n";
+    friend ostream& operator<<(ostream& out, const Currency& c1);
+    string getName()const{ return m_name;}
+    double getValue()const{ return m_value;}
+    
+};
+
+ostream& operator<<(ostream& out, const Currency& c1){
+    out << c1.m_name << "value related to Euro is: " << c1.m_value <<"\n";
+    return out;
 }
 
 int main(){
     
-    vector<string> currencyList;
-    currencyList.push("Swiss Franc");
-    currencyList.push("British Pound");
-    currencyList.push("Japanese Yen");
-    currencyList.push("Americand Dolar");
-    currencyList.push("European Euro");
-    currencyList.push("Polish zloti");
-    currencyList.push("Danish Crown");
-    currencyList.push("Swedish Crown");
-
-
-    cout<<"Welcome to the currency convertor \n";
-    printvector(currencyList);
+    map<string, Currency> my_map{{"1",Currency(1.00,"European Euro")}};
+    my_map["2"] = Currency(1.04,"Swiss Franc");
+    my_map["3"] = Currency(0.84,"British Pounds");
+    my_map["4"] = Currency(130.02,"Japanese Yen");
+    my_map["5"] = Currency(1.14,"American Dolar");
+    my_map["6"] = Currency(4.53,"Polish Zloti");
+    my_map["7"] = Currency(7.44,"Danish Crown");
+    my_map["8"] = Currency(10.28,"Sewedish Crown");
+    
+    cout << "Welcome to the currency conversor.\n Please select a currency\n";
+    
 
 }
