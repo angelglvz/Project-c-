@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<iostream>
 #include<string.h>
+#include <string>
 #include<iterator>
 #include <map>
 using namespace std;
@@ -14,69 +15,194 @@ class Currency{
     Currency(double value = 1.00, string name = ""):m_value(value), m_name(name){}
     ~Currency(){
     }
-    friend ostream& operator<<(ostream& out, const Currency& c1);
     string getName()const{ return m_name;}
     double getValue()const{ return m_value;}
     
 };
 
-ostream& operator<<(ostream& out, const Currency& c1){
-    out << c1.m_name << "value related to Euro is: " << c1.m_value <<"\n";
-    return out;
-}
-void printList1(map<int, Currency>& myList){
-  map<int, Currency>::iterator it;
+
+
+void printList1(map<string, Currency>& myList){
+  cout << "Welcome to the currency conversor.\n Please select a currency\n\n";
+  map<string, Currency>::iterator it;
   for(it = myList.begin();it != myList.end();it++){
     cout<<it->first <<": "<<it->second.getName()<<endl;
   }
   cout<< "\n0: Stop the program\n\n";
 }
 
-void readValue(const string& str, int& i,map<int, Currency>& myList){
+void printList2(map<string, Currency>& myList, string values){
+  cout << "\n Please select a second currency currency\n\n";
+  map<string, Currency>::iterator it;
+  for(it = myList.begin();it != myList.end();it++){
+    if(it->first != values )
+      cout<<it->first <<": "<<it->second.getName()<<endl;
+  }
+  cout<< "\n0: Go to main\n\n";
+}
+
+int readValue( map<string, Currency> myList){
   bool usable =false;
+  int devolver=0;
+
   do{
-    string::const_iterator it= str.begin();
-    while (it != str.end() && std::isdigit(*it)) ++it;
-    if( !str.empty() && it == str.end()){
-      i = stoi(str);
-      if (i>=0 && i<=8){
-        usable=true;
-      }
-      else{
-        cout<<"Inapropiate value";
-        printList1(myList);
+    string input;
+    cin>> input;
+    map<string, Currency>::iterator it;
+    if(input =="0"){usable = true;}
+    else{
+      for(it = myList.begin();it!= myList.end(); it++){
+        if(input == it->first){
+          usable = true;
+          devolver = stoi(input);
+        }
       }
     }
-    else{
-      cout<<"Inapropiate value";
+
+    if(!usable){
+      cout << "\nPlease select a valid input\n\n";
       printList1(myList);
     }
+    
+    
   }while(!usable);
+  return devolver;
 
+}
+int readValue2( map<string, Currency> myList, string values){
+  bool usable =false;
+  int devolver=0;
+
+  do{
+    string input;
+    cin>> input;
+    map<string, Currency>::iterator it;
+    if(input =="0"){usable = true;}
+    else{
+      for(it = myList.begin();it!= myList.end(); it++){
+        if(input == it->first){
+          if(input == values){
+            cout << "That number is unavalable\n";
+          }
+          else{
+            usable = true;
+            devolver = stoi(input);
+          }
+          
+        }
+      }
+    }
+
+    if(!usable){
+      cout << "\nPlease select a valid input\n\n";
+      printList2(myList, values);
+    }
+    
+    
+  }while(!usable);
+  return devolver;
+
+}
+
+bool is_number(const string& s)
+{
+  try
+  {
+    stod(s);
+  }
+  catch(const string& str)
+  {
+    cerr << "We caught an exception: "<< str << endl;
+    return false;
+  }
+  catch (double x)
+  {
+    cerr << "We caught an exception: "<< x << endl;
+    return false;
+  }
+  return true;
+}
+
+double readQuantity(){
+  double devolver;
+  bool usable(false);
+
+  do{
+    string input;
+    cin>> input;
+    if(!is_number(input)){
+      cout <<"Please select a valid Quantity\n\n";
+    }
+    else{
+      devolver = stod(input);
+      if(devolver <0){
+        cout <<"Please select a positive number\n\n";
+      }
+      else{
+        cout << "Valid quantity\n\n";
+        usable = true;
+      }
+    }
+    
+    
+  }while(!usable);
+  return devolver;
+}
+
+
+
+double calculate(const string& values, const string & values2, const double& quantity, map<string, Currency> myList){
+  double primer, segundo;
+  map<string, Currency>::iterator it;
+  for(it= myList.begin();it!= myList.end(); it++){
+    if (it->first == values){primer=it->second.getValue();}
+    if (it->first == values2){segundo=it->second.getValue();}
+  }
+
+  return quantity/primer*segundo;
 }
 
 int main(){
     
-  map<int, Currency> my_map{{1,Currency(1.00,"European Euro")}};
-  my_map[2] = Currency(1.04,"Swiss Franc");
-  my_map[3] = Currency(0.84,"British Pounds");
-  my_map[4] = Currency(130.02,"Japanese Yen");
-  my_map[5] = Currency(1.14,"American Dolar");
-  my_map[6] = Currency(4.53,"Polish Zloti");
-  my_map[7] = Currency(7.44,"Danish Crown");
-  my_map[8] = Currency(10.28,"Sewedish Crown");
+  map<string, Currency> my_map{{"1",Currency(1.00,"European Euro")},{"2",Currency(1.04,"Swiss Franc")},{"3",Currency(0.84,"British Pounds")},{"4",Currency(130.02,"Japanese Yen")},{"5",Currency(1.14,"American Dolar")},{"6",Currency(4.53,"Polish Zloti")},{"7",Currency(7.44,"Danish Crown")},{"8",Currency(10.28,"Sewedish Crown")}};
   
-  cout << "Welcome to the currency conversor.\n Please select a currency\n\n";
-  string values = "";
-  int values2;
-  bool programa(false);
-  while(!programa){
+  
+  int values, values2;
+  bool mainMenu(false), secondMenu(false);
+  double quantity;
+
+  while(!mainMenu){
+    mainMenu=false;
+    secondMenu=false;
     printList1(my_map);
-    cin >>values;
-    readValue(values, values2,my_map );
-    switch(values2){
-      default: break;
+    values = readValue(my_map );
+  
+    switch(values){
+      case 0: 
+        mainMenu=true;
+        break;
+
+      default:
+        cout<< "Selected value: "<<values<<"\nWhich is the currency: " << my_map[to_string(values)].getName()<<"\n\n";
+        cout << "Select the quantity\n";
+        quantity = readQuantity();
+
+        while(!secondMenu){
+          printList2(my_map,to_string(values));
+          values2 = readValue2(my_map, to_string(values));
+
+          switch(values2){
+            case 0:
+              secondMenu=true;
+              break;
+            default:
+              cout << calculate(to_string(values), to_string(values2), quantity,my_map)<< endl;
+              secondMenu=true;
+          }
+        }
+        break;
     }
   }
+  return 0;
 
 }
