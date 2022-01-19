@@ -106,7 +106,7 @@ int readValue2( map<string, Currency> myList, string values){
 
 bool isDouble(const string& str){
   char* end = nullptr;
-  double val = strtod(str.c_str(), &end);
+  strtod(str.c_str(), &end);
   return end != str.c_str() && *end == '\0';
 }
 
