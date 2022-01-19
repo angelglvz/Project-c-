@@ -104,23 +104,10 @@ int readValue2( map<string, Currency> myList, string values){
 
 }
 
-bool is_number(const string& s)
-{
-  try
-  {
-    stod(s);
-  }
-  catch(const string& str)
-  {
-    cerr << "We caught an exception: "<< str << endl;
-    return false;
-  }
-  catch (double x)
-  {
-    cerr << "We caught an exception: "<< x << endl;
-    return false;
-  }
-  return true;
+bool isDouble(const string& str){
+  char* end = nullptr;
+  double val = strtod(str.c_str(), &end);
+  return end != str.c_str() && *end == '\0';
 }
 
 double readQuantity(){
@@ -130,7 +117,7 @@ double readQuantity(){
   do{
     string input;
     cin>> input;
-    if(!is_number(input)){
+    if(!isDouble(input)){
       cout <<"Please select a valid Quantity\n\n";
     }
     else{
